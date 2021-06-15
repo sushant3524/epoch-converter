@@ -11,29 +11,29 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:epoch-converter.convert",
-		"onCommand:epoch-converter.reverse"
+		"onCommand:epoch-converter.getHRT",
+		"onCommand:epoch-converter.rmvHRT"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "epoch-converter.convert",
-				"title": "Convert"
+				"command": "epoch-converter.getHRT",
+				"title": "Get Human Readable Times"
 			},
 			{
-				"command": "epoch-converter.reverse",
-				"title": "Reverse"
+				"command": "epoch-converter.rmvHRT",
+				"title": "Remove Human Readable Time Tags"
 			}
 		],
         "keybindings": [
             {
-                "command": "epoch-converter.convert",
+                "command": "epoch-converter.getHRT",
                 "key": "shift+alt+c",
                 "mac": "shift+alt+c"
             },
 			{
-                "command": "epoch-converter.reverse",
+                "command": "epoch-converter.rmvHRT",
                 "key": "shift+alt+r",
                 "mac": "shift+alt+r"
             }
