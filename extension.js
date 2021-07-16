@@ -31,6 +31,39 @@ function activate(context) {
 
     });
 
+	var dispose_hover=vscode.languages.registerHoverProvider({language: "*", scheme: "*"},
+	{
+		provideHover(document, position, token) 
+		{
+			var rnge=document.getWordRangeAtPosition(position);
+			var y=document.getText(rnge);
+			if(y.match(/^-?[0-9]+$/g)&&vscode.workspace.getConfiguration('epoch-converter').get('usingHover'))
+			{
+				if(y.length>13||y.length===11)
+				return null;
+				var nm=Number(y);
+				var fl=" (millisec)";
+				if(y.length<11)
+				{
+					fl=" (sec)";
+					nm*=1000;
+				}
+				if(nm<315532800000)
+				{
+					return null;
+				}
+				var ans=new Date(nm);
+				if(!vscode.workspace.getConfiguration('epoch-converter').get('IST'))
+					return new vscode.Hover(ans.toUTCString()+fl);
+				var hvr=new vscode.Hover(ans.toDateString()+" "+ans.toTimeString()+fl);
+				return hvr;
+			}
+			else return null;
+
+		}
+	});
+	context.subscriptions.push(dispose_hover);
+
 	let disposable = vscode.commands.registerCommand('epoch-converter.getHRT', function () 
 	{
 		let editor = vscode.window.activeTextEditor;
@@ -112,7 +145,10 @@ function activate(context) {
 										continue;
 									}
 									ans=new Date(nm);
-									var dec={renderOptions:{after:{backgroundColor: 'blue', color:'white', contentText: ans.toDateString()+" "+ans.toTimeString()+fl, fontWeight: 'normal',
+									var cont=ans.toString();
+									if(!vscode.workspace.getConfiguration('epoch-converter').get('IST'))
+										cont=ans.toUTCString();
+									var dec={renderOptions:{after:{backgroundColor: 'blue', color:'white', contentText: cont+fl, fontWeight: 'normal',
 									fontStyle: 'normal'}}, range:wrdRnge};
 									decorationsArray.push(dec);
 									
@@ -134,8 +170,6 @@ function activate(context) {
 				}
 			}
 		}
-			// Display a message box to the user
-			//vscode.window.showInformationMessage('Hello World from Epoch-Converter!');
 			
 	});
 
@@ -224,9 +258,7 @@ function activate(context) {
 									
 									var dec={renderOptions:{after:{backgroundColor: 'blue', color:'white', contentText: "", fontWeight: 'normal',
 									fontStyle: 'normal'
-									// Pull the decoration out of the document flow if we want to be scrollable textDecoration: `none;${false ? '' : ' position: absolute;'}`,
 									 }}, range:wrdRnge};
-									//dec.range=new vscode.Range(new vscode.Position(i,j),new vscode.Position(i,j));
 									decorationsArray.push(dec);
 								}
 								cnt++;
@@ -245,8 +277,6 @@ function activate(context) {
 				}
 			}
 		}
-			// Display a message box to the user
-			//vscode.window.showInformationMessage('Hello World from Epoch-Converter!');
 			
 	});
 

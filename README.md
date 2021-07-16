@@ -1,7 +1,8 @@
 # Epoch-Converter README
 
 This extension will add an **unobtrusive** *Human-Readable time* tag right next to any unix epoch timestamps in the editor.
-It will be very helpful to those who want to refer to real dates for every timestamp in the editor so that they can double check their epoch number.
+* By Unobtrusive it means that the tag generated will not be selectable and will not change the basic structure of the text in editor whatsoever.
+* It will be very helpful to those who want to refer to real dates for every timestamp in the editor so that they can double check their epoch number.
 > Note: It will only get the Human-Readable time of timestamps ahead of 1 Jan 1980.
 
 ## Features:
@@ -14,7 +15,11 @@ It will be very helpful to those who want to refer to real dates for every times
 
 > Note: To give a command first you have to open the command pallete. For Mac: "Cmd+Shft+p", For Windows: "Ctrl+Shft+p".
 
+* Additionally, there is a hover feature available now, which will show the *Human-Readable time* for any epoch number which we hover on.
+> It can be configured on/off in settings, (default is on)
+
 It accepts both types of timestamps i.e in seconds or in milliseconds.
+> Configurable to UTC/IST(default).
 
 ## Shortcuts:
 
@@ -37,3 +42,7 @@ It accepts both types of timestamps i.e in seconds or in milliseconds.
 * **After:**
 
 ![](image/After.png)
+
+* **Hover:**
+
+![](image/hover.png)

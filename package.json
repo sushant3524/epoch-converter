@@ -12,7 +12,8 @@
 	],
 	"activationEvents": [
 		"onCommand:epoch-converter.getHRT",
-		"onCommand:epoch-converter.rmvHRT"
+		"onCommand:epoch-converter.rmvHRT",
+		"*"
 	],
 	"main": "./extension.js",
 	"contributes": {
@@ -37,7 +38,23 @@
 				"key": "shift+alt+r",
 				"mac": "shift+alt+r"
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Epoch-Converter",
+			"properties": {
+					"epoch-converter.usingHover": {
+							"type": "boolean",
+							"default": true,
+							"markdownDescription": "Hover Feature"
+					},
+					"epoch-converter.IST": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Indian Standard Time"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"lint": "eslint .",
