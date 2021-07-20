@@ -12,7 +12,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Added decorations so that the tags created are unobtrusive.
 
-## [1.1.0]
+## [1.3.0]
 
 - Added Hover feature and made it configurable.
 - Added a configuration for IST/UTC
+
+## [1.4.0]
+
+- Added intrusive text feature configurable from settings.
+- Added a configuration to change timezone from local to UTC or vice versa

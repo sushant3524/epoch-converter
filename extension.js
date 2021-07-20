@@ -53,7 +53,7 @@ function activate(context) {
 					return null;
 				}
 				var ans=new Date(nm);
-				if(!vscode.workspace.getConfiguration('epoch-converter').get('IST'))
+				if(!vscode.workspace.getConfiguration('epoch-converter').get('setTimezone'))
 					return new vscode.Hover(ans.toUTCString()+fl);
 				var hvr=new vscode.Hover(ans.toDateString()+" "+ans.toTimeString()+fl);
 				return hvr;
@@ -83,7 +83,7 @@ function activate(context) {
 				{
 					vscode.window.showInformationMessage("Please provide some text");
 				} 
-				else 
+				else if(vscode.workspace.getConfiguration('epoch-converter').get('Unobstrusive'))
 				{
 					try
 					{
@@ -146,9 +146,9 @@ function activate(context) {
 									}
 									ans=new Date(nm);
 									var cont=ans.toString();
-									if(!vscode.workspace.getConfiguration('epoch-converter').get('IST'))
+									if(!vscode.workspace.getConfiguration('epoch-converter').get('setTimezone'))
 										cont=ans.toUTCString();
-									var dec={renderOptions:{after:{backgroundColor: 'blue', color:'white', contentText: cont+fl, fontWeight: 'normal',
+									var dec={renderOptions:{after:{backgroundColor: 'blue', color:'white', contentText: " "+cont+fl, fontWeight: 'normal',
 									fontStyle: 'normal'}}, range:wrdRnge};
 									decorationsArray.push(dec);
 									
@@ -159,6 +159,7 @@ function activate(context) {
 						}
 						cnt=0;
 						editor.setDecorations(annotationDecoration,decorationsArray);
+						console.log("Created timestamp successfully");
 						
 					}
 					catch (error) 
@@ -167,6 +168,101 @@ function activate(context) {
 						vscode.window.showInformationMessage("Unable to process text due to " + error);
 					}
 						
+				}
+				else
+				{
+					try
+					{
+						var nlines=doc.lineCount;
+						var dte=[];
+						var pos=[];
+						var txt=doc.getText();
+						var cnt=0;
+						var wrdRnge;
+						var chck;
+						var line;
+						var str;
+						var nm;
+						var ans;
+
+						for(var i=0;i<nlines;i++)
+						{
+							line=doc.lineAt(i);
+							str=line.text;
+
+							for(var j=0;j<str.length;j++)
+							{
+
+								if(str[j]<'0'&&str[j]>'9')
+								{
+									cnt++;
+									continue;
+								}
+								var curr=new vscode.Position(i,j);
+								wrdRnge=doc.getWordRangeAtPosition(curr);
+								chck=doc.getText(wrdRnge);
+								if((j+chck.length)>str.length||(str.substr(j,chck.length)!==chck))
+								{
+									cnt++;
+									continue;
+								}
+								cnt=cnt+chck.length-1;
+								j=j+chck.length-1;
+								if(chck.match(/^-?[0-9]+$/g))
+								{
+									if(chck.length>13||chck.length===11)
+									{
+										cnt++;
+										continue;
+									}
+									
+									nm=Number(chck);
+									if(chck.length>10)
+									{
+
+									}
+									else
+									{
+										nm*=1000;
+									}
+									if(nm<315532800000)
+									{
+										cnt++;
+										continue;
+									}
+									ans=new Date(nm);
+									var cont=ans.toString();
+									if(!vscode.workspace.getConfiguration('epoch-converter').get('setTimezone'))
+										cont=ans.toUTCString();
+									dte.push(" '"+cont+"' ");
+									pos.push(cnt+1);
+
+								}
+								cnt++;
+							}
+							cnt++;
+						}
+						cnt=0;
+						var final="";
+						for(var i=0;i<dte.length;i++)
+						{
+							final=final+txt.slice(cnt,pos[i])+dte[i];
+							cnt=pos[i];
+						}					
+						final=final+txt.slice(cnt);
+						editor.edit((builder) => builder.replace(new vscode.Range(new vscode.Position(0, 0),
+							new vscode.Position(doc.lineCount, 0)),final)).then((success)=>
+							{
+								console.log("Created timestamp successfully: " + success);
+
+							});
+					}
+					catch (error) 
+					{
+						console.log("Error occurred: " + error);
+						vscode.window.showInformationMessage("Unable to process text due to " + error);
+					}
+
 				}
 			}
 		}
@@ -188,13 +284,12 @@ function activate(context) {
 			} 
 			else 
 			{
-				// retrieve selected text and if nothing is selected, everything is retrieved
 				const textSelection = doc.getText().trim();
 				if (!textSelection) 
 				{
 					vscode.window.showInformationMessage("Please provide some text");
 				} 
-				else 
+				else if(vscode.workspace.getConfiguration('epoch-converter').get('Unobstrusive'))
 				{
 					try
 					{
@@ -266,6 +361,7 @@ function activate(context) {
 							cnt++;
 						}
 						editor.setDecorations(annotationDecoration,decorationsArray);
+						console.log("Removed timestamp successfully");
 						
 					}
 					catch (error) 
@@ -274,6 +370,106 @@ function activate(context) {
 						vscode.window.showInformationMessage("Unable to process text due to " + error);
 					}
 					
+				}
+				else
+				{
+					try
+					{
+						var nlines=doc.lineCount;
+						var pos=[];
+						var txt=doc.getText();
+						var cnt=0;
+						var wrdRnge;
+						var chck;
+						var line;
+						var str;
+						var nm;
+						var ans;
+						var tmp1;
+						var tmp2;
+
+						for(var i=0;i<nlines;i++)
+						{
+							line=doc.lineAt(i);
+							str=line.text;
+
+							for(var j=0;j<str.length;j++)
+							{
+
+								if(str[j]<'0'&&str[j]>'9')
+								{
+									cnt++;
+									continue;
+								}
+								var curr=new vscode.Position(i,j);
+								wrdRnge=doc.getWordRangeAtPosition(curr);
+								chck=doc.getText(wrdRnge);
+								if((j+chck.length)>str.length||(str.substr(j,chck.length)!==chck))
+								{
+									cnt++;
+									continue;
+								}
+								cnt=cnt+chck.length-1;
+								j=j+chck.length-1;
+								if(chck.match(/^-?[0-9]+$/g))
+								{
+									//exp++;
+									if(chck.length>13||chck.length===11)
+									{
+										cnt++;
+										continue;
+									}
+									nm=Number(chck);
+									if(chck.length>10)
+									{
+										
+									}
+									else
+									{
+										nm*=1000;
+									}
+									if(nm<315532800000)
+									{
+										cnt++;
+										continue;
+									}
+									ans=new Date(nm);
+									var cont=ans.toString();
+									if(!vscode.workspace.getConfiguration('epoch-converter').get('setTimezone'))
+										cont=ans.toUTCString();
+									tmp1=" '"+cont+"' ";
+									tmp2=txt.substr(cnt+1,cont.length+4);
+									if(tmp1===tmp2)
+									{
+										pos.push(cnt+1);
+									}
+
+								}
+								cnt++;
+							}
+							cnt++;
+						}
+						cnt=0;
+						var final="";
+						for(var i=0;i<pos.length;i++)
+						{
+							final=final+txt.slice(cnt,pos[i]);
+							cnt=pos[i]+cont.length+4;
+						}					
+						final=final+txt.slice(cnt);
+						editor.edit((builder) => builder.replace(new vscode.Range(new vscode.Position(0, 0),
+							new vscode.Position(doc.lineCount, 0)),final)).then((success)=>
+							{
+								console.log("Removed timestamp successfully: " + success);
+
+							});
+					}
+					catch (error) 
+					{
+						console.log("Error occurred: " + error);
+						vscode.window.showInformationMessage("Unable to process text due to " + error);
+					}
+
 				}
 			}
 		}
@@ -286,7 +482,6 @@ function activate(context) {
 
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {

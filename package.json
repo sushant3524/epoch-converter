@@ -48,10 +48,15 @@
 					"default": true,
 					"markdownDescription": "Hover Feature"
 				},
-				"epoch-converter.IST": {
+				"epoch-converter.setTimezone": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Indian Standard Time"
+					"markdownDescription": "Local Timezone, if unchecked will show in UTC Timezone"
+				},
+				"epoch-converter.Unobstrusive": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "If unchecked, it will generate inline instrusive text"
 				}
 			}
 		}
